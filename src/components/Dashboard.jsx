@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+
 import Gauge from "./Gauge";
 import TelemetryLineChart from "./TelemetryLineChart";
 import HistoryTable from "./HistoryTable";
 import GlassFocusWrap from "./GlassFocusWrap";
 
-const socket = io("http://localhost:3000");
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+const socket = io(API_URL, {
+  transports: ["websocket", "polling"],
+});
 
 function Dashboard() {
   const [data, setData] = useState(null);
@@ -18,6 +23,7 @@ function Dashboard() {
 
     const onTelemetry = (newData) => {
       setData(newData);
+
       setHistory((prev) => [
         ...prev,
         {
@@ -26,6 +32,33 @@ function Dashboard() {
         },
       ]);
     };
+
+    fetch(`${API_URL}/api/data/latest`)
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.success && response.data) {
+          setData(response.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error cargando último dato:", error);
+      });
+
+    fetch(`${API_URL}/api/data/history?limit=500`)
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.success && Array.isArray(response.data)) {
+          setHistory(
+            response.data.map((item) => ({
+              ...item,
+              timeLabel: `${item.fecha ?? ""} ${item.hora ?? ""}`.trim(),
+            }))
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error cargando historial:", error);
+      });
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
@@ -47,6 +80,7 @@ function Dashboard() {
       <div className="container">
         <header className="dashboard-header glass-panel">
           <h1>Sistema de Riego Inteligente</h1>
+
           <span className={`status-pill ${connected ? "online" : "offline"}`}>
             {connected ? "Conectado al servidor" : "Sin conexión"}
           </span>
@@ -58,22 +92,29 @@ function Dashboard() {
         </p>
 
         {!data && (
-          <p className="waiting-banner glass-panel">Esperando datos del ESP32...</p>
+          <p className="waiting-banner glass-panel">
+            Esperando datos del ESP32...
+          </p>
         )}
 
         <section className="panel status-panel glass-panel">
           <GlassFocusWrap title="Estado del riego" className="status-card-wrap">
             <div className="status-card glass-inset">
               <span className="status-card-label">Estado del riego</span>
+
               <strong className="status-card-value">
                 {data?.decision ?? "—"}
               </strong>
             </div>
           </GlassFocusWrap>
 
-          <GlassFocusWrap title="Última actualización" className="status-card-wrap">
+          <GlassFocusWrap
+            title="Última actualización"
+            className="status-card-wrap"
+          >
             <div className="status-card glass-inset">
               <span className="status-card-label">Última actualización</span>
+
               <strong className="status-card-value">
                 {data ? `${data.fecha} · ${data.hora}` : "—"}
               </strong>
@@ -83,6 +124,7 @@ function Dashboard() {
 
         <section className="panel glass-panel">
           <h2 className="section-title">Lecturas en tiempo real</h2>
+
           <div className="gauges-row">
             <GlassFocusWrap
               title="Humedad del suelo"
@@ -145,9 +187,12 @@ function Dashboard() {
         >
           <section className="panel-inner">
             <h2 className="section-title">Evolución de sensores en el tiempo</h2>
+
             <p className="charts-section-desc">
-              Cada gráfica muestra un dato distinto frente al tiempo (fecha y hora de cada lectura).
+              Cada gráfica muestra un dato distinto frente al tiempo fecha y hora
+              de cada lectura.
             </p>
+
             <TelemetryLineChart history={history} />
           </section>
         </GlassFocusWrap>
