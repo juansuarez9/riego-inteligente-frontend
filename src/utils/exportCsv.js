@@ -1,3 +1,5 @@
+import { formatDecision } from "./formatDecision";
+
 const CSV_COLUMNS = [
   { key: "fecha", header: "Fecha" },
   { key: "hora", header: "Hora" },
@@ -20,7 +22,11 @@ export function downloadTelemetryCsv(rows, filename = "telemetria_riego.csv") {
 
   const headerLine = CSV_COLUMNS.map((c) => escapeCsvCell(c.header)).join(",");
   const bodyLines = rows.map((row) =>
-    CSV_COLUMNS.map((c) => escapeCsvCell(row[c.key])).join(",")
+    CSV_COLUMNS.map((c) =>
+      escapeCsvCell(
+        c.key === "decision" ? formatDecision(row[c.key]) : row[c.key]
+      )
+    ).join(",")
   );
 
   const csv = [headerLine, ...bodyLines].join("\r\n");

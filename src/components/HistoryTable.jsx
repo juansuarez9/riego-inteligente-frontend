@@ -1,4 +1,5 @@
 import { downloadTelemetryCsv } from "../utils/exportCsv";
+import { formatDecision } from "../utils/formatDecision";
 import GlassFocusWrap from "./GlassFocusWrap";
 import FocusableTableRow from "./FocusableTableRow";
 
@@ -50,7 +51,11 @@ function HistoryTable({ history }) {
               {[...history].reverse().map((row, index) => (
                 <FocusableTableRow key={`${row.fecha}-${row.hora}-${index}`} row={row}>
                   {TABLE_COLUMNS.map((col) => (
-                    <td key={col.key}>{row[col.key] ?? "—"}</td>
+                    <td key={col.key}>
+                      {col.key === "decision"
+                        ? formatDecision(row[col.key])
+                        : (row[col.key] ?? "—")}
+                    </td>
                   ))}
                 </FocusableTableRow>
               ))}

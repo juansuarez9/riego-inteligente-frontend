@@ -1,4 +1,5 @@
 import { useLongHover } from "../hooks/useLongHover";
+import { formatDecision } from "../utils/formatDecision";
 import FocusPortal from "./FocusPortal";
 
 const FIELD_LABELS = {
@@ -46,7 +47,11 @@ function FocusableTableRow({ row, children }) {
             {Object.entries(FIELD_LABELS).map(([key, label]) => (
               <div key={key} className="row-focus-detail__item">
                 <dt>{label}</dt>
-                <dd>{row[key] ?? "—"}</dd>
+                <dd>
+                  {key === "decision"
+                    ? formatDecision(row[key])
+                    : (row[key] ?? "—")}
+                </dd>
               </div>
             ))}
           </dl>

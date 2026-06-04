@@ -6,6 +6,7 @@ import TelemetryLineChart from "./TelemetryLineChart";
 import HistoryTable from "./HistoryTable";
 import GlassFocusWrap from "./GlassFocusWrap";
 import { formatLastUpdate, formatTimeLabel } from "../utils/formatDateTime";
+import { formatDecision } from "../utils/formatDecision";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -110,7 +111,7 @@ function Dashboard() {
               <span className="status-card-label">Estado del riego</span>
 
               <strong className="status-card-value">
-                {data?.decision ?? "—"}
+                {formatDecision(data?.decision)}
               </strong>
             </div>
           </GlassFocusWrap>
