@@ -158,6 +158,26 @@ h1 {
   padding: 24px 30px;
 }
 
+.dashboard-header__titles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dashboard-header__authors {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.dashboard-header__author {
+  line-height: 1.35;
+}
+
 .status-pill {
   font-size: 0.95rem;
   padding: 10px 16px;

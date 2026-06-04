@@ -5,6 +5,7 @@ import Gauge from "./Gauge";
 import TelemetryLineChart from "./TelemetryLineChart";
 import HistoryTable from "./HistoryTable";
 import GlassFocusWrap from "./GlassFocusWrap";
+import { formatLastUpdate, formatTimeLabel } from "../utils/formatDateTime";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -28,7 +29,7 @@ function Dashboard() {
         ...prev,
         {
           ...newData,
-          timeLabel: `${newData.fecha ?? ""} ${newData.hora ?? ""}`.trim(),
+          timeLabel: formatTimeLabel(newData),
         },
       ]);
     };
@@ -51,7 +52,7 @@ function Dashboard() {
           setHistory(
             response.data.map((item) => ({
               ...item,
-              timeLabel: `${item.fecha ?? ""} ${item.hora ?? ""}`.trim(),
+              timeLabel: formatTimeLabel(item),
             }))
           );
         }
@@ -79,7 +80,13 @@ function Dashboard() {
 
       <div className="container">
         <header className="dashboard-header glass-panel">
-          <h1>Sistema de Riego Inteligente</h1>
+          <div className="dashboard-header__titles">
+            <h1>Sistema de Riego Inteligente</h1>
+            <p className="dashboard-header__authors">
+              <span className="dashboard-header__author">Juan Suarez</span>
+              <span className="dashboard-header__author">Sergio Potosi</span>
+            </p>
+          </div>
 
           <span className={`status-pill ${connected ? "online" : "offline"}`}>
             {connected ? "Conectado al servidor" : "Sin conexión"}
@@ -116,7 +123,7 @@ function Dashboard() {
               <span className="status-card-label">Última actualización</span>
 
               <strong className="status-card-value">
-                {data ? `${data.fecha} · ${data.hora}` : "—"}
+                {formatLastUpdate(data)}
               </strong>
             </div>
           </GlassFocusWrap>
