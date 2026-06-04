@@ -94,10 +94,31 @@ function Dashboard() {
           </span>
         </header>
 
-        <p className="ui-tip glass-panel">
-          Haz <strong>clic</strong> en un panel o mantén el cursor{" "}
-          <strong>5 segundos</strong> sobre él para verlo a pantalla completa.
-        </p>
+        <section className="operator-summary glass-panel" aria-label="Resumen para el operario">
+          <h2 className="operator-summary__title">¿Qué puede hacer aquí?</h2>
+          <ul className="operator-summary__list">
+            <li>
+              Consultar en <strong>tiempo real</strong> la humedad del suelo, la
+              temperatura y la humedad del aire del cultivo.
+            </li>
+            <li>
+              Revisar si el sistema está <strong>riegando o en reposo</strong> y la
+              hora de la última lectura del sensor.
+            </li>
+            <li>
+              Ver cómo cambian esos datos en las <strong>gráficas</strong> a lo largo
+              del tiempo.
+            </li>
+            <li>
+              Consultar el <strong>historial</strong> de mediciones y descargarlo en
+              Excel (CSV) para analizarlo después.
+            </li>
+            <li>
+              Hacer <strong>clic</strong> en cualquier sección (o mantener el cursor
+              5 segundos) para verla más grande y con más detalle.
+            </li>
+          </ul>
+        </section>
 
         {!data && (
           <p className="waiting-banner glass-panel">
